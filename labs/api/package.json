@@ -1,0 +1,24 @@
+{
+  "name": "@demo/labs-api",
+  "version": "0.1.0",
+  "description": "Labs API demo - showcases @rip-lang/api, @rip-lang/schema, @rip-lang/server, and @rip-lang/data",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "rip-server .",
+    "db:push": "rip-schema db:push",
+    "db:seed": "bun db/seed.rip"
+  },
+  "dependencies": {
+    "rip-lang": "workspace:*",
+    "@rip-lang/api": "workspace:*",
+    "@rip-lang/data": "workspace:*",
+    "@rip-lang/schema": "workspace:*",
+    "@rip-lang/server": "workspace:*",
+    "@faker-js/faker": "^9.3.0",
+    "hono": "^4.7.8"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.0"
+  }
+}
