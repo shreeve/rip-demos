@@ -9,6 +9,12 @@ component App
   handleSearch: (e) ->
     searchTerm = e.target.value
 
+  onListClick: (e) ->
+    (selectedTests = handleItemClick(e, selectedTests) or selectedTests) and requestAnimationFrame(() => requestAnimationFrame(() => updateListItemClasses(@_root, selectedTests)))
+
+  mounted: ->
+    @_root.querySelector('.listWrapper')?.addEventListener('click', (e) => @onListClick(e)) or requestAnimationFrame(() => updateListItemClasses(@_root, selectedTests))
+
   render
     .("h-screen flex flex-col items-center justify-center p-4")
       .("card w-full max-w-3xl flex flex-col h-[40rem] max-h-[90vh]")
@@ -28,26 +34,29 @@ component App
             span.("search-icon text-muted") "🔍"
             input.("search-input") type: "text", placeholder: "Search by test name or code...", autocomplete: "off", @input: @handleSearch
 
-        # List
-        .("card-body flex-1 relative")
-          .("w-full pb-2")
-            for test in filteredTests
-              .("list-item")
-                .("flex items-center gap-4 overflow-hidden")
-                  .checkbox
-                  .("flex flex-col min-w-0")
-                    .("flex items-center gap-2 mb-0.5")
-                      span.badge test.code
-                    span.("text-sm font-medium truncate pr-4") test.name
-                .("flex flex-col items-end gap-0.5 whitespace-nowrap pl-4")
-                  span.("price-current") formatCurrency(test.discount)
-                  span.("price-original") formatCurrency(test.retail)
+        # List (click handler added via mounted)
+        .("listWrapper flex-1 overflow-hidden")
+          .("card-body h-full relative overflow-auto")
+            .("w-full pb-2")
+              for test in filteredTests
+                .("list-item cursor-pointer")
+                  div data_id: test.id, ""
+                  .("flex items-center gap-4 overflow-hidden")
+                    .checkbox
+                      span.("checkbox-icon")
+                    .("flex flex-col min-w-0")
+                      .("flex items-center gap-2 mb-0.5")
+                        span.badge test.code
+                      span.("text-sm font-medium truncate pr-4") test.name
+                  .("flex flex-col items-end gap-0.5 whitespace-nowrap pl-4")
+                    span.("price-current") formatCurrency(test.discount)
+                    span.("price-original") formatCurrency(test.retail)
 
-          # Empty State
-          .("empty-state")
-            .("empty-state-icon") "🧪"
-            h3.("empty-state-title") "No matching tests"
-            p.("empty-state-description") "Try adjusting your search terms."
+            # Empty State
+            .("empty-state")
+              .("empty-state-icon") "🧪"
+              h3.("empty-state-title") "No matching tests"
+              p.("empty-state-description") "Try adjusting your search terms."
 
         # Footer
         .("card-footer shrink-0 z-20")
@@ -58,7 +67,7 @@ component App
                 span "#{totals.count} #{pluralize(totals.count, 'item')}"
               .("flex justify-between text-xs text-secondary font-medium")
                 span "Retail Value"
-                span.("line-through") formatCurrency(totals.retail)
+                span.("line-through text-muted") style: (if totals.count > 0 then "opacity:1" else "opacity:0.5"), formatCurrency(totals.retail)
               .("flex justify-between items-center pt-3 border-t border-gray-200/60")
                 span.("text-sm font-semibold") "Total"
                 span.("text-lg font-semibold tracking-tight") formatCurrency(totals.discount)

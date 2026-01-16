@@ -29,3 +29,20 @@ def formatCurrency(amount, currency = 'USD', locale = 'en-US')
 
 def pluralize(count, singular, plural = null)
   if count is 1 then singular else (plural ?? "#{singular}s")
+
+# Toggle an id in a Set, returning a new Set
+def toggleInSet(set, id)
+  s = new Set(set)
+  if s.has(id) then s.delete(id) else s.add(id)
+  s
+
+# Handle click on list items via event delegation - returns new Set or null
+def handleItemClick(e, currentSet)
+  item = e.target.closest('.list-item')
+  dataEl = item?.querySelector('[data_id]')
+  id = dataEl?.getAttribute('data_id')
+  if id then toggleInSet(currentSet, parseInt(id)) else null
+
+# Update list item and checkbox classes based on selection
+def updateListItemClasses(root, selectedSet)
+  root.querySelectorAll('.list-item').forEach (item) -> id = parseInt(item.querySelector('[data_id]')?.getAttribute('data_id')); isSelected = selectedSet.has(id); item.classList.toggle('selected', isSelected); item.querySelector('.checkbox')?.classList.toggle('checked', isSelected)

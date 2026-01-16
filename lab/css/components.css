@@ -129,16 +129,18 @@
 }
 
 .checkbox-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-    color: var(--color-text-inverse);
-    transform: scale(0.5);
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid var(--color-text-inverse);
+    border-bottom: 2px solid var(--color-text-inverse);
+    transform: rotate(-45deg) scale(0);
     opacity: 0;
     transition: all var(--transition-base);
+    margin-bottom: 2px;
 }
 
 .checkbox.checked .checkbox-icon {
-    transform: scale(1);
+    transform: rotate(-45deg) scale(1);
     opacity: 1;
 }
 

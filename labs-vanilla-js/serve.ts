@@ -6,7 +6,7 @@
  * Run: bun serve.ts
  */
 
-const PORT = 3000;
+const PORT = 3002;
 
 Bun.serve({
     port: PORT,
