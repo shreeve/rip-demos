@@ -4,31 +4,67 @@ component App
   searchTerm := ''
   selectedTests := new Set()
   totals ~= calculateTotals(selectedTests)
+  filteredTests ~= if searchTerm is '' then medicalTests else medicalTests.filter (t) => t.name.toLowerCase().includes(searchTerm.toLowerCase()) or t.code.toLowerCase().includes(searchTerm.toLowerCase())
 
   handleSearch: (e) ->
     searchTerm = e.target.value
 
   render
     .("h-screen flex flex-col items-center justify-center p-4")
-      .("card w-full max-w-3xl flex flex-col")
-        .("card-header p-6")
-          h1.("text-lg font-semibold") "Lab Orders"
-          input.("search-input mt-4") type: "text", placeholder: "Search...", @input: @handleSearch
+      .("card w-full max-w-3xl flex flex-col h-[40rem] max-h-[90vh]")
 
-        .("card-body overflow-auto p-4")
-          for test in medicalTests
-            .("list-item p-4 border-b")
-              .("flex justify-between")
-                div
-                  span.badge test.code
-                  span.("ml-2") test.name
-                div
-                  span formatCurrency(test.discount)
+        # Header
+        .("card-header shrink-0 z-10")
+          .("flex justify-between items-center mb-6")
+            .("flex items-center gap-3")
+              .logo "LO"
+              div
+                h1.("text-lg font-semibold tracking-tight leading-tight") "New Order"
+                p.("text-xs text-secondary mt-0.5") "Select tests for patient #89201"
+            button.("p-2 hover:bg-gray-50 rounded-lg text-muted hover:text-secondary transition-colors") "⋯"
 
-        .("card-footer p-4")
-          .("flex justify-between")
-            span "Total"
-            span formatCurrency(totals.discount)
-          button.("btn btn-primary w-full mt-4") "Create Order"
+          # Search
+          .("search-input-wrapper")
+            span.("search-icon text-muted") "🔍"
+            input.("search-input") type: "text", placeholder: "Search by test name or code...", autocomplete: "off", @input: @handleSearch
+
+        # List
+        .("card-body flex-1 relative")
+          .("w-full pb-2")
+            for test in filteredTests
+              .("list-item")
+                .("flex items-center gap-4 overflow-hidden")
+                  .checkbox
+                  .("flex flex-col min-w-0")
+                    .("flex items-center gap-2 mb-0.5")
+                      span.badge test.code
+                    span.("text-sm font-medium truncate pr-4") test.name
+                .("flex flex-col items-end gap-0.5 whitespace-nowrap pl-4")
+                  span.("price-current") formatCurrency(test.discount)
+                  span.("price-original") formatCurrency(test.retail)
+
+          # Empty State
+          .("empty-state")
+            .("empty-state-icon") "🧪"
+            h3.("empty-state-title") "No matching tests"
+            p.("empty-state-description") "Try adjusting your search terms."
+
+        # Footer
+        .("card-footer shrink-0 z-20")
+          .("flex flex-col gap-4")
+            .("space-y-2")
+              .("flex justify-between text-xs text-secondary font-medium")
+                span "Selected Tests"
+                span "#{totals.count} #{pluralize(totals.count, 'item')}"
+              .("flex justify-between text-xs text-secondary font-medium")
+                span "Retail Value"
+                span.("line-through") formatCurrency(totals.retail)
+              .("flex justify-between items-center pt-3 border-t border-gray-200/60")
+                span.("text-sm font-semibold") "Total"
+                span.("text-lg font-semibold tracking-tight") formatCurrency(totals.discount)
+
+            button.("btn btn-primary w-full group")
+              span "Create Order"
+              span.("btn-icon") "→"
 
 App.new().mount "#app"
