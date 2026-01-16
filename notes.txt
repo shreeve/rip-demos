@@ -1,0 +1,9 @@
+Formalize the Rip Loader Spec v0.1
+
+Decide how rip.js resolves relative imports
+
+Add a service-worker layer so /app.rip survives reloads instantly
+
+Or sketch the 30-line minimal loader that proves this works end-to-end
+
+==
