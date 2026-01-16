@@ -1,0 +1,31 @@
+# Medical Tests Data (no export - global scope for browser)
+
+medicalTests = [
+  { id: 1,  code: 'CBC',   name: 'Complete Blood Count',           retail: 45.00, discount: 29.00, category: 'hematology'  }
+  { id: 2,  code: 'CMP',   name: 'Comprehensive Metabolic Panel',  retail: 55.00, discount: 39.00, category: 'chemistry'   }
+  { id: 3,  code: 'TSH',   name: 'Thyroid Stimulating Hormone',    retail: 60.00, discount: 42.00, category: 'endocrine'   }
+  { id: 4,  code: 'LIPID', name: 'Lipid Panel',                    retail: 50.00, discount: 35.00, category: 'chemistry'   }
+  { id: 5,  code: 'A1C',   name: 'Hemoglobin A1c',                 retail: 48.00, discount: 32.00, category: 'chemistry'   }
+  { id: 6,  code: 'VITD',  name: 'Vitamin D, 25-Hydroxy',          retail: 85.00, discount: 59.00, category: 'nutrition'   }
+  { id: 7,  code: 'UA',    name: 'Urinalysis, Complete',           retail: 30.00, discount: 19.00, category: 'urinalysis'  }
+  { id: 8,  code: 'FER',   name: 'Ferritin',                       retail: 40.00, discount: 28.00, category: 'hematology'  }
+  { id: 9,  code: 'B12',   name: 'Vitamin B12',                    retail: 55.00, discount: 38.00, category: 'nutrition'   }
+  { id: 10, code: 'TEST',  name: 'Testosterone, Total',            retail: 90.00, discount: 65.00, category: 'endocrine'   }
+  { id: 11, code: 'CRP',   name: 'C-Reactive Protein',             retail: 45.00, discount: 30.00, category: 'immunology'  }
+  { id: 12, code: 'MG',    name: 'Magnesium',                      retail: 35.00, discount: 22.00, category: 'chemistry'   }
+]
+
+def calculateTotals(selectedIds)
+  medicalTests.reduce (acc, test) ->
+    if selectedIds.has(test.id)
+      acc.count++
+      acc.retail += test.retail
+      acc.discount += test.discount
+    acc
+  , { count: 0, retail: 0, discount: 0 }
+
+def formatCurrency(amount, currency = 'USD', locale = 'en-US')
+  new Intl.NumberFormat(locale, { style: 'currency', currency }).format(amount)
+
+def pluralize(count, singular, plural = null)
+  if count is 1 then singular else (plural ?? "#{singular}s")
